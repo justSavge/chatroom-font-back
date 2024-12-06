@@ -1,21 +1,21 @@
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
-import Talking from "./pages/Talking";
-import GlobalStyle from "./style/GlobalStyled";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
+import Talking from './pages/Talking';
+import GlobalStyle from './style/GlobalStyled';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/",
+      path: '/',
       element: <Home />,
     },
     {
-      path: "chat",
+      path: 'chat',
       element: <Talking />,
     },
     {
-      path: "*",
+      path: '*',
       element: <NotFound />,
     },
   ]);
