@@ -1,6 +1,6 @@
-const passkey = "Bearer igVyBuRZclTjpdCeXtdX:ZLKUFGGzzhjQJAbbYkFi";
+const passkey = import.meta.env.VITE_AI_PASSKEY;
 //没有好的办法隐藏密钥，漏了就漏了吧，如果有可能的话使用jwt会好一些
-const AIUrl = "https://spark-api-open.xf-yun.com/v1/chat/completions";
+const AIUrl = import.meta.env.VITE_AI_URL;
 const defaultHeader = {
   "Content-Type": "application/json",
   Authorization: passkey,

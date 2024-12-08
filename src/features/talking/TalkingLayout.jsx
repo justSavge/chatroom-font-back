@@ -5,19 +5,22 @@ import {
   FullPageLayout,
   TalkingRoom,
   Tips,
-} from '../../style/layout/TalkingLayoutStyle';
+} from "../../style/layout/TalkingLayoutStyle";
 
-import { InputLayout } from '../../style/layout/InputLayout';
-import InputToServer from './InputToServer';
-import { useLJStore } from '../../store/websocketStore';
-import PostButton from './PostButton';
-import { MessageLayout } from '../../style/layout/MessageLayout';
-import Robot from './Robot';
-import { MessageBox } from 'react-chat-elements';
-import { memo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { InputLayout } from "../../style/layout/InputLayout";
+import InputToServer from "./InputToServer";
+import { useLJStore } from "../../store/websocketStore";
+import PostButton from "./PostButton";
+import { MessageLayout } from "../../style/layout/MessageLayout";
+import Robot from "./Robot";
+import { MessageBox } from "react-chat-elements";
+import { memo } from "react";
+import { useNavigate } from "react-router-dom";
 
-const TalkingLayoutMemo = memo(function TalkingLayoutMemo({ talkingData, myScoketID }) {
+const TalkingLayoutMemo = memo(function TalkingLayoutMemo({
+  talkingData,
+  myScoketID,
+}) {
   return (
     <FullPageLayout>
       <TalkingRoom>
@@ -26,8 +29,10 @@ const TalkingLayoutMemo = memo(function TalkingLayoutMemo({ talkingData, myScoke
             <MessageBox
               key={oneTalking.timeStamp}
               type="text"
-              title={oneTalking.sender === myScoketID ? 'you' : oneTalking.sender}
-              position={oneTalking.sender === myScoketID ? 'left' : 'right'}
+              title={
+                oneTalking.sender === myScoketID ? "you" : oneTalking.sender
+              }
+              position={oneTalking.sender === myScoketID ? "left" : "right"}
               text={oneTalking.message}
             />
           ))}
@@ -48,12 +53,14 @@ const TalkingLayoutMemo = memo(function TalkingLayoutMemo({ talkingData, myScoke
     </FullPageLayout>
   );
 });
-const TalkingLayout = function () {
-  const { talkingData, myScoketID, isSuccess } = useLJStore();
+const TalkingLayout = function ({ isSuccess }) {
+  const { talkingData, myScoketID } = useLJStore();
   const navigate = useNavigate();
   if (!isSuccess) {
-    navigate('/');
+    navigate("/");
   }
-  return <TalkingLayoutMemo talkingData={talkingData} myScoketID={myScoketID} />;
+  return (
+    <TalkingLayoutMemo talkingData={talkingData} myScoketID={myScoketID} />
+  );
 };
 export default TalkingLayout;

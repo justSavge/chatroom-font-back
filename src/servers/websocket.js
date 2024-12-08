@@ -1,5 +1,5 @@
 import socketIO from "socket.io-client";
-const url = "http://localhost:6657";
+const url = import.meta.env.VITE_WEBSOCKET_URL;
 /**
  * 作为一个io服务的提供者
  * @returns io

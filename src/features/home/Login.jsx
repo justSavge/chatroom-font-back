@@ -1,22 +1,21 @@
-import { Button, Checkbox, Form, Input } from 'antd';
-import { LoginStyle } from '../../style/home/LoginStyle';
-import { memo, useState } from 'react';
-import SwitchIsLogin from './SwitchIsLogin';
+import { Button, Checkbox, Form, Input } from "antd";
+import { LoginStyle } from "../../style/home/LoginStyle";
+import { useState } from "react";
+import SwitchIsLogin from "./SwitchIsLogin";
+import { useNavigate } from "react-router-dom";
 // import { useLJStore } from '../../store/websocketStore';
 
-const Login = function () {
-  //这里不能使用webscoketContext,不能包裹app，需要构建基于连接的provider
-  return null;
-  const { submitLoginOrRegister } = useLJStore();
-  return <LoginMemo submitLoginOrRegister={submitLoginOrRegister} />;
-};
-const LoginMemo = memo(function LoginMemo(submitLoginOrRegister) {
+const Login = function ({ setIsSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
+  const navigate = useNavigate()
   const onFinish = (values) => {
-    console.log('Success:', values);
+    console.log("Success:", values);
+    //TODO:传递给后端api,返回success才可以设为true，然后跳转到聊天室页面
+    setIsSuccess(true);
+    navigate('/chat-room');
   };
   const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+    console.log("Failed:", errorInfo);
   };
   /**只接受true,false */
   const handleChangeLoginState = function (isLogin) {
@@ -26,7 +25,10 @@ const LoginMemo = memo(function LoginMemo(submitLoginOrRegister) {
   console.log(form);
   return (
     <LoginStyle>
-      <SwitchIsLogin onChangeLoginState={handleChangeLoginState} isLogin={isLogin} />
+      <SwitchIsLogin
+        onChangeLoginState={handleChangeLoginState}
+        isLogin={isLogin}
+      />
       <Form
         name="basic"
         labelCol={{
@@ -51,7 +53,7 @@ const LoginMemo = memo(function LoginMemo(submitLoginOrRegister) {
           rules={[
             {
               required: true,
-              message: '请输入你的用户名!',
+              message: "请输入你的用户名!",
             },
           ]}
         >
@@ -64,7 +66,7 @@ const LoginMemo = memo(function LoginMemo(submitLoginOrRegister) {
             rules={[
               {
                 required: true,
-                message: '请输入你的邮箱!',
+                message: "请输入你的邮箱!",
               },
             ]}
           >
@@ -77,7 +79,7 @@ const LoginMemo = memo(function LoginMemo(submitLoginOrRegister) {
           rules={[
             {
               required: true,
-              message: '请输入你的密码!',
+              message: "请输入你的密码!",
             },
           ]}
         >
@@ -89,19 +91,19 @@ const LoginMemo = memo(function LoginMemo(submitLoginOrRegister) {
           valuePropName="checked"
           label={null}
           style={{
-            textAlign: 'left',
-            display: 'flex',
-            justifyContent: 'center',
+            textAlign: "left",
+            display: "flex",
+            justifyContent: "center",
           }}
         >
-          <Checkbox style={{ width: '5rem', color: 'white' }}>记住我</Checkbox>
+          <Checkbox style={{ width: "5rem", color: "white" }}>记住我</Checkbox>
         </Form.Item>
         <Form.Item
           label={null}
           style={{
-            textAlign: 'center',
-            display: 'flex',
-            justifyContent: 'center',
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
           }}
         >
           <Button type="primary" htmlType="submit" onClick={() => {}}>
@@ -111,5 +113,5 @@ const LoginMemo = memo(function LoginMemo(submitLoginOrRegister) {
       </Form>
     </LoginStyle>
   );
-});
+};
 export default Login;

@@ -2,11 +2,11 @@ import TalkingLayout from "../features/talking/TalkingLayout";
 import { chatingServer } from "../servers/websocket";
 import { CreateTalkingContextProvider } from "../store/websocketStore";
 
-function Talking() {
+function Talking({ isSuccess }) {
   const TalkingContextProvider = CreateTalkingContextProvider(chatingServer());
   return (
     <TalkingContextProvider>
-      <TalkingLayout />
+      <TalkingLayout isSuccess={isSuccess} />
     </TalkingContextProvider>
   );
 }
