@@ -31,7 +31,6 @@ const reducer = function (state, action) {
       return {
         ...state,
         userName: state.userName.set(
-          action.payload.userID,
           action.payload.userName
         ),
       };
@@ -55,7 +54,8 @@ const initiztion = {
 export const CreateTalkingContextProvider = function (io) {
   return function TalkingContextProvider({ children }) {
     const [state, dispatch] = useReducer(reducer, initiztion);
-    const { talkingData, robotTalkingData, inputValue, isSuccess } = state;
+    const { talkingData, robotTalkingData, inputValue, isSuccess, userName } =
+      state;
     //将服务端发送的数据储存到talkingData
     /**
      * @param {{timeStamp:Date,sender:string,message:string}} signMessage
@@ -65,6 +65,10 @@ export const CreateTalkingContextProvider = function (io) {
       //接受服务器信息部分
       io.on("connect", () => {
         console.log("成功与后端建立连接");
+      });
+      io.on("postUserNameForEveryone", (message) => {
+        console.log(message, "接到了");
+        dispatch({ type: "addUserName", payload: message.userName });
       });
       io.on("messageHuman", (message) => {
         console.log(message);

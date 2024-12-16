@@ -4,7 +4,6 @@ import NotFound from "./pages/NotFound";
 import Talking from "./pages/Talking";
 import GlobalStyle from "./style/GlobalStyled";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
 function App() {
   const [isSuccess, setIsSuccess] = useState(false);
   const router = createBrowserRouter([
@@ -21,6 +20,7 @@ function App() {
       element: <NotFound />,
     },
   ]);
+
   return (
     <>
       <GlobalStyle />

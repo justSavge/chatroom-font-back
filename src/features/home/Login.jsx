@@ -3,16 +3,19 @@ import { LoginStyle } from "../../style/home/LoginStyle";
 import { useState } from "react";
 import SwitchIsLogin from "./SwitchIsLogin";
 import { useNavigate } from "react-router-dom";
+import { userLogin } from "../../servers/HomePageServer";
 // import { useLJStore } from '../../store/websocketStore';
 
 const Login = function ({ setIsSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
-  const navigate = useNavigate()
-  const onFinish = (values) => {
+  const navigate = useNavigate();
+  const onFinish = async (values) => {
     console.log("Success:", values);
     //TODO:传递给后端api,返回success才可以设为true，然后跳转到聊天室页面
+    const isSuccess = await userLogin(values);
+    console.log(isSuccess);
     setIsSuccess(true);
-    navigate('/chat-room');
+    navigate("/chat-room");
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -21,8 +24,6 @@ const Login = function ({ setIsSuccess }) {
   const handleChangeLoginState = function (isLogin) {
     setIsLogin(isLogin);
   };
-  const [form] = Form.useForm();
-  console.log(form);
   return (
     <LoginStyle>
       <SwitchIsLogin
@@ -49,7 +50,7 @@ const Login = function ({ setIsSuccess }) {
       >
         <Form.Item
           label="用户名"
-          name="username"
+          name="userName"
           rules={[
             {
               required: true,
