@@ -1,19 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Talking from "./pages/Talking";
 import GlobalStyle from "./style/GlobalStyled";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [loginData, setLoginData] = useState({
+    status: 0,
+    data: {},
+    isSuccess: false,
+  });
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Home setIsSuccess={setIsSuccess} />,
+      element: <Home setLoginData={setLoginData} />,
     },
     {
       path: "chat-room",
-      element: <Talking isSuccess={isSuccess} />,
+      element: <Talking loginData={loginData} />,
     },
     {
       path: "*",

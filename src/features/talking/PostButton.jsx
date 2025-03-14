@@ -1,32 +1,34 @@
 import { Button } from "antd";
 import { useCustomizedUserInput } from "../../style/chatbox/useCustomizedUserInput";
-import { useLJStore } from "../../store/websocketStore";
-import { memo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getCurrentStoreData,
+  setUserInputValue,
+} from "../../store/globalSlice";
+import { ioInstance } from "../../servers/websocket";
 
-const PostButtonMemo = memo(function PostButtonMemo({
-  sendMessage,
-  getInputValue,
-  inputValue,
-}) {
+const PostButton = function () {
   const { styles } = useCustomizedUserInput();
+  const { userInputValue, myAccountData } = useSelector(getCurrentStoreData());
+  const { account, name, custom = {} } = myAccountData;
+  console.log(userInputValue);
+  const dispatch = useDispatch();
   const postMessage = function () {
-    sendMessage(inputValue);
-    getInputValue("");
+    console.log(userInputValue);
+    if (userInputValue && userInputValue?.length) {
+      ioInstance.emit("user-broadcast-message", {
+        message: userInputValue,
+        account,
+        name,
+        custom,
+      });
+    }
+    dispatch(setUserInputValue(""));
   };
   return (
     <Button className={styles.putMessage} onClick={postMessage}>
       发出
     </Button>
-  );
-});
-const PostButton = function () {
-  const { sendMessage, inputValue, getInputValue } = useLJStore();
-  return (
-    <PostButtonMemo
-      sendMessage={sendMessage}
-      inputValue={inputValue}
-      getInputValue={getInputValue}
-    />
   );
 };
 export default PostButton;

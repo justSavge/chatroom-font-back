@@ -1,21 +1,32 @@
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, Form, Input, message } from "antd";
 import { LoginStyle } from "../../style/home/LoginStyle";
 import { useState } from "react";
 import SwitchIsLogin from "./SwitchIsLogin";
 import { useNavigate } from "react-router-dom";
-import { userLogin } from "../../servers/HomePageServer";
-// import { useLJStore } from '../../store/websocketStore';
+import { userLogin, userRegister } from "../../servers/HomePageServer";
 
-const Login = function ({ setIsSuccess }) {
+const Login = function ({ setLoginData }) {
   const [isLogin, setIsLogin] = useState(true);
+  const [messageApi, _] = message.useMessage();
   const navigate = useNavigate();
   const onFinish = async (values) => {
     console.log("Success:", values);
     //TODO:传递给后端api,返回success才可以设为true，然后跳转到聊天室页面
-    const isSuccess = await userLogin(values);
-    console.log(isSuccess);
-    setIsSuccess(true);
-    navigate("/chat-room");
+    const serverResData = isLogin
+      ? await userLogin(values)
+      : await userRegister(values);
+    const { isSuccess, data } = serverResData;
+    setLoginData(data);
+    console.log("处理以后的数据", serverResData);
+    if (isSuccess && values.remember) {
+      if (values.remember) {
+        localStorage.setItem("account", values.account);
+      }
+      console.log("应该跳转了呀");
+      navigate("/chat-room");
+    } else {
+      messageApi.error(serverResData.status + " " + serverResData.data);
+    }
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -43,37 +54,38 @@ const Login = function ({ setIsSuccess }) {
         }}
         initialValues={{
           remember: true,
+          userName: localStorage.getItem("userName"),
         }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Form.Item
-          label="用户名"
-          name="userName"
-          rules={[
-            {
-              required: true,
-              message: "请输入你的用户名!",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
         {!isLogin && (
           <Form.Item
-            label="邮箱"
-            name="email"
+            label="用户名"
+            name="name"
             rules={[
               {
                 required: true,
-                message: "请输入你的邮箱!",
+                message: "请输入你的用户名!",
               },
             ]}
           >
             <Input />
           </Form.Item>
         )}
+        <Form.Item
+          label="账号"
+          name="account"
+          rules={[
+            {
+              required: true,
+              message: "请输入你的账号!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
         <Form.Item
           label="密码"
           name="password"
@@ -86,7 +98,6 @@ const Login = function ({ setIsSuccess }) {
         >
           <Input.Password />
         </Form.Item>
-
         <Form.Item
           name="remember"
           valuePropName="checked"

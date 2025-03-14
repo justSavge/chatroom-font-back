@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 /**
  * 纯样式
  */
@@ -24,8 +24,8 @@ export const Sign = styled.div`
   height: 3rem;
   line-height: 3rem;
   font-size: 2rem;
-  background-color: ${(props) => props.isClick && '#555555'};
-  color: ${(props) => props.isClick && '#8fbbe4'};
+  background-color: ${(props) => props.hasclick === "1" && "#555555"};
+  color: ${(props) => props.hasclick === "1" && "#8fbbe4"};
   &:hover {
     background-color: #555555;
     color: #799ec2;

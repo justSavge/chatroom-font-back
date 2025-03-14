@@ -5,10 +5,11 @@ import styled from "styled-components";
  */
 export const MessageLayout = styled.div`
   width: 50rem;
-  max-height: 80%;
+  height: 388px;
   /* background-color: #fff; */
   overflow-y: scroll;
   overflow-x: hidden;
+  position: relative;
   &::-webkit-scrollbar {
     width: 4px;
   }

@@ -1,162 +1,97 @@
 /* eslint-disable no-case-declarations */
-import { useCallback, useEffect, useReducer } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import {
   RobotContainer,
   RobotImage,
 } from "../../style/containerImage/RobotContainer";
 import RobotSmallTalking from "./RobotSmallTalking";
-const reducer = function (state, action) {
-  switch (action.type) {
-    case "startMovie":
-      const { cursorX, cursorY } = action.payload;
-      return {
-        ...state,
-        isMoving: true,
-        currentCursorX: cursorX,
-        currentCursorY: cursorY,
-      };
-    case "moving":
-      if (!state.isMoving) return state;
-      const { x, y } = action.payload;
-      console.log(x, y, "xxxyyy");
-      return { ...state, x: x, y: y, quickRes: "rejected" };
-    case "movieOver":
-      return {
-        ...state,
-        isMoving: false,
-      };
-    case "entry":
-      return { ...state, isHadEntry: true };
-    case "tenSecondGone":
-      return { ...state, isTenSecondGone: true };
-    case "changeOpenRoom":
-      return {
-        ...state,
-        isShowRoom:
-          action.payload === "resolved" ? !state.isShowRoom : state.isShowRoom,
-        quickRes: action.payload,
-      };
-    default:
-      return state;
-  }
-};
+import RobotHeaderImgSelection from "./RobotHeaderImgSelection";
+import { robotImgsWithDescription } from "../../lib/Talking/headerImg";
+
 //以左下角为起点0，0，初始值1，1
-const initizertion = {
-  x: 80,
-  y: window.innerHeight - 80,
-  currentCursorX: 0,
-  currentCursorY: 0,
-  isMoving: false,
-  isHadEntry: false,
-  isTenSecondGone: false,
-  quickRes: "pendding",
-  isShowRoom: false,
-  // quickClickTimer: null,
-};
-function Robot() {
-  const [state, dispatch] = useReducer(reducer, initizertion);
-  const {
-    x,
-    y,
-    isMoving,
-    isHadEntry,
-    isTenSecondGone,
-    currentCursorX,
-    currentCursorY,
-    isShowRoom,
-    quickRes,
-    // quickClickTimer,
-  } = state;
-  let quickClickTimer = null;
-  const handleMouseMove = useCallback(
-    (e) => {
-      const nowX = e.pageX - currentCursorX;
-      const nowY = e.pageY - currentCursorY;
-      let x =
-        e.pageX > window.innerWidth - 80
-          ? window.innerWidth - 80
-          : e.pageX < 10
-          ? 10
-          : nowX;
 
-      let y =
-        e.pageY > window.innerHeight - 80
-          ? window.innerHeight - 80
-          : e.pageY < 80
-          ? 10
-          : nowY;
-      dispatch({
-        type: "moving",
-        payload: {
-          x: x, //67是元素的宽度
-          y: y,
-        },
-      });
-    },
-    [currentCursorX, currentCursorY]
+function Robot({ defineProperty }) {
+  const [robotStyle, setRobotStyle] = useState(
+    () => robotImgsWithDescription[0]
   );
-  const handleMouseUp = useCallback(function (e) {
-    dispatch({ type: "movieOver" });
-  }, []);
-  useEffect(() => {
-    if (isMoving) {
-      console.log(state.x, state.y, state.isMoving);
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
-    } else {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-      console.log(window);
+  const [isShowRoom, setIsShowRoom] = useState(false);
+  const [robotPosition, setRobotPosition] = useState({ top: 10, left: 10 });
+  const [isShowRobotSelection, setIsShowRobotSelection] = useState(false);
+  const [isShowRobotHelloMessage, setIsShowRobotHelloMessage] = useState(() => {
+    if (localStorage.getItem("isShowRobotHelloMessage") === "false") {
+      return false;
     }
-  }, [isMoving]);
+    return true;
+  });
+  const cursorOnContainerPosition = { top: 0, left: 0 };
   useEffect(() => {
-    console.log(isHadEntry, "isHadEntry");
+    if (isShowRobotHelloMessage === false) return;
     const timer = setTimeout(() => {
-      dispatch({ type: "tenSecondGone" });
-    }, 500);
+      setIsShowRobotHelloMessage(false);
+      localStorage.setItem("isShowRobotHelloMessage", "false");
+    }, 4000);
     return () => clearTimeout(timer);
-  }, [isHadEntry]);
+  }, []);
+  const { top, left } = robotPosition;
+  const handleChangeRobotStyle = function (robotItem) {
+    setRobotStyle(robotItem);
+    setIsShowRobotSelection(false);
+  };
 
-  const handleMouseDown = function (e) {
-    e.preventDefault();
-    dispatch({
-      type: "startMovie",
-      payload: {
-        cursorX: e.pageX - e.currentTarget.getBoundingClientRect().left,
-        cursorY: e.pageY - e.currentTarget.getBoundingClientRect().top,
-      },
-    });
+  defineProperty(() => {
+    setRobotPosition(() => ({
+      top: window.innerHeight / 2,
+      left: window.innerWidth / 2,
+    }));
+  });
+  const handleRobotDragStart = function (e) {
+    const { clientX, clientY } = e;
+    const { top, left } = e.currentTarget.getBoundingClientRect();
+    cursorOnContainerPosition.top = clientY - top;
+    cursorOnContainerPosition.left = clientX - left;
   };
-  const handleChangeDown = function () {
-    dispatch({ type: "changeOpenRoom", payload: "pendding" });
-    quickClickTimer = setTimeout(() => {
-      dispatch({ type: "changeOpenRoom", payload: "rejected" });
-    }, 500);
+  const handleRobotDragEnd = function (e) {
+    const { clientX, clientY } = e;
+    const { top, left } = cursorOnContainerPosition;
+    const currentX = clientX - left;
+    const currentY = clientY - top;
+    setRobotPosition(() => ({ top: currentY, left: currentX }));
   };
-  const handleChangeUp = function () {
-    if (quickRes === "pendding")
-      dispatch({ type: "changeOpenRoom", payload: "resolved" });
-    clearTimeout(quickClickTimer);
+  const handleChangeDown = function (e) {
+    if (e.button !== 2) return;
+    setIsShowRobotSelection(true);
+  };
+  const handleShowRoom = function (e) {
+    if (e.button !== 0) return;
+    setIsShowRoom((isShow) => !isShow);
   };
   return (
     <RobotContainer
-      x={x}
-      y={y}
-      $allowshow={`${!isTenSecondGone}`}
-      onMouseDown={(e) => {
-        handleMouseDown(e);
-      }}
-      onMouseEnter={() => {
-        dispatch({ type: "entry" });
-      }}
+      x={left}
+      y={top}
+      $allowshow={`${!isShowRobotHelloMessage}`}
+      draggable
+      onDragStart={handleRobotDragStart}
+      onDragEnd={handleRobotDragEnd}
+      onClick={handleShowRoom}
     >
       <RobotImage
-        src="/image/robot.svg"
-        alt=":)"
+        src={robotStyle.imgPath}
+        alt="机器人"
         onMouseDown={handleChangeDown}
-        onMouseUp={handleChangeUp}
+        onContextMenu={(e) => e.preventDefault()}
       />
-      {isShowRoom && <RobotSmallTalking />}
+      {isShowRobotSelection && (
+        <RobotHeaderImgSelection
+          handleChangeRobotStyle={handleChangeRobotStyle}
+        />
+      )}
+      {isShowRoom && (
+        <RobotSmallTalking
+          performer={robotStyle.description.title}
+          performerFeatures={robotStyle.description.content}
+        />
+      )}
     </RobotContainer>
   );
 }

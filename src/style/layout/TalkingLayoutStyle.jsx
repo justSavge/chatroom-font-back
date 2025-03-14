@@ -10,7 +10,7 @@ export const FullPageLayout = styled.div`
   display: flex;
   padding-top: 4rem;
   justify-content: center;
-  background-color: rgb(37, 1, 77);
+  background-color: ${(props) => props.fullPageLayoutBackgroundColor};
 `;
 /**
  * styled-components
@@ -20,7 +20,7 @@ export const TalkingRoom = styled.div`
   width: 50rem;
   height: 30rem;
   /* margin-top: 5rem; */
-  background-color: rgb(75, 40, 150);
+  background-color: ${(props) => props.TalkingRoomBackgroundColor};
   border: 1px solid rgb(160, 80, 255);
   position: relative;
 `;
@@ -34,7 +34,7 @@ export const Tips = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #fff;
+  background-color: ${(props) => props.TipsBackgroundColor};
   align-content: center;
   margin-left: 4rem;
 `;
@@ -102,6 +102,15 @@ export const CoolButton = ({ context = "?" }) => {
 export const CounTimer = styled.div`
   width: 7rem;
   height: 7rem;
-  background-color: yellow;
+  background-color: #ffff3079;
+  line-height: 7rem;
+  text-align: center;
+  font-size: 1rem;
   margin: auto;
+  transition-duration: 300ms;
+  border-radius: 50%;
+  &:hover {
+    transform: scale(1.02);
+    cursor: pointer;
+  }
 `;

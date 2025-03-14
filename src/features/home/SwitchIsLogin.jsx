@@ -1,12 +1,18 @@
-import { Sign, SwitchLayout } from '../../style/home/SwitchLayoutStyle';
+import { Sign, SwitchLayout } from "../../style/home/SwitchLayoutStyle";
 
 function SwitchIsLogin({ onChangeLoginState, isLogin }) {
   return (
     <SwitchLayout>
-      <Sign isClick={isLogin} onClick={() => onChangeLoginState(true)}>
+      <Sign
+        hasclick={isLogin ? "1" : "0"}
+        onClick={() => onChangeLoginState(true)}
+      >
         登录
       </Sign>
-      <Sign isClick={!isLogin} onClick={() => onChangeLoginState(false)}>
+      <Sign
+        hasclick={!isLogin ? "1" : "0"}
+        onClick={() => onChangeLoginState(false)}
+      >
         注册
       </Sign>
     </SwitchLayout>

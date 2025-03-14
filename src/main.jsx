@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDom from "react-dom/client";
 import App from "./App";
 import "react-chat-elements/dist/main.css";

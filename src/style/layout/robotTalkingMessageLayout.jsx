@@ -5,9 +5,7 @@ export const RobotTalkingMessageLayout = styled.div`
   height: 22rem;
   overflow-y: scroll;
   overflow-x: hidden;
-  display: flex;
   padding-bottom: 3rem;
-  flex-direction: column;
   &::-webkit-scrollbar {
     width: 4px;
   }

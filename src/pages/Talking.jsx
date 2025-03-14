@@ -1,13 +1,12 @@
-import TalkingLayout from "../features/talking/TalkingLayout";
-import { chatingServer } from "../servers/websocket";
-import { CreateTalkingContextProvider } from "../store/websocketStore";
+import { Provider } from "react-redux";
+import store from "../store/userStore";
+import TalkingLayout from "../features/talking/IndexLayout";
 
-function Talking({ isSuccess }) {
-  const TalkingContextProvider = CreateTalkingContextProvider(chatingServer());
+function Talking({ loginData }) {
   return (
-    <TalkingContextProvider>
-      <TalkingLayout isSuccess={isSuccess} />
-    </TalkingContextProvider>
+    <Provider store={store}>
+      <TalkingLayout loginData={loginData} />
+    </Provider>
   );
 }
 

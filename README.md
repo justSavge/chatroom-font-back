@@ -1,38 +1,77 @@
-需求：<br/> 1.为两个用户提供稳定的连接，可以实现正常聊天<br/> 2.会话记录仅仅在页面存在，不会被保存 <br/>4.可以生成唯一的房间号，保持记录房间 48 小时，不可查询数据库是否已有该房间，以免存在潜在的房间泄露风险 <br/>3.输入房间号可以进入唯一房间，二者仅有‘我’，‘他’表示二者 <br/>4.应该尽可能黑客（帅 <br/>5.潜在的拓展功能，比如加上我自己
+#### 数据传输约定
 
-技术实现： <br/>1.前端技术选用 react + antd <br/>2.连接技术使用 webStock <br/>3.服务端技术选用 node.js + express
+所以数据应该使用 json 格式发送
 
-思路：
-<br/>1.防止出现生成房间号相同的情况,会生成一个全局唯一的数据，可以在后端使用 symbol <br/>2.所有房间号都是一次性的（48 小时有效），任何一方都可以提前销毁房间
-<br/>3.ui 尽量深沉黑暗酷炫
-<br/>
-<br/>
-前端架构:<br/>
-pages:第一页：聊天室，第二页：个人介绍<br/>
-ui:存放不参与交互的纯组件<br/>
-features：提供逻辑性组件<br/>
-servers：对接服务端<br/>
-选用<br/>
-hook:存放自定义 hook<br/>
-utils:存放通用的组件/函数<br/>
-为了文件名更加有意义，不使用 components 作为文件夹<br/>
-<br/>
-后端架构：<br/>
-model
-control
-view
-router
-<br/>
-<br/>
-交互：
-交互的数据形式统一使用[{}],不论大小多少<br/>
-目前确定的数据有房间号，使用[{roomID:123}]形式<br/>
-<br/>
-<br/>
-问题：
-websocket 没有跨域问题
-跨域：综合下来,cros(back),vite(front)
+#### 标准数据发送格式
 
+```
+{
+    timeStamp,
+    message,
+    senderId,
+    senderName,
+    custom
+}
+```
+
+#### 前端向聊天服务器 post 数据格式 / 本地存储所有聊天数据（包括 ai 的问/答）格式
+
+    {
+      // 例如发送question
+      question:{
+        message:string
+        // 应该尽可能减少字段，例如以下的前缀可以在前端发送时拼接
+        // 如果有拓展数据也放在这里
+        prefix:string // 使用场景，我需要为聊天记录解释，并且给出解释方案，我想安慰这个人应该如何回复：+message
+      }
+    }
+
+#### 向 ai 发送 question 的格式
+
+- 经过处理简化以后仅有三个字段
+
+```
+  {
+      // 问题内容
+      message: any;
+      // ai 扮演的角色
+      performer?: string;
+      // ai 扮演角色的特点
+      performerFeatures?: string
+  }
+```
+
+### websocket
+
+#### 提供字段
+
+- messageForRobot - 和 ai 聊天，在机器人弹窗当中实现
+
+#### 鉴权
+
+- host: localhost:6658
+- date: 格式: Fri, 05 May 2023 10:43:39 GMT
+
+```
+const date = new Date();
+date.toUTCString();
+```
+
+- GET /v1.1/chat HTTP/1.1
+
+#### http 连接
+
+##### custom 字段
+
+自定义拓展字段
+headImage: 位于 headerImgsNames
+customBgColor:{ layout, messageBox, rightContainer} 对应整体，用户聊天，右边的容器(呼唤机器人等)
+
+#### redux 改造工程
+
+由前端维护用户聊天记录
+对于单个用户/机器人也是
+发现一个弊端：redux不可以存储不可序列化的数据，比如dom节点
 <!--  -->
 
 为了减少逻辑，我展示将所有客户端的聊天都要经过服务器一遍，这样便于聊天记录管理。、

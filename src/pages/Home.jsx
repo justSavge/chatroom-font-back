@@ -3,7 +3,7 @@ import Introduce from "../features/home/Introduce";
 import Login from "../features/home/Login";
 import { HomeLayout } from "../style/layout/HomeLayout";
 
-function Home({ setIsSuccess }) {
+function Home({ setLoginData }) {
   return (
     <ConfigProvider
       theme={{
@@ -16,7 +16,7 @@ function Home({ setIsSuccess }) {
     >
       <HomeLayout>
         <Introduce />
-        <Login setIsSuccess={setIsSuccess} />
+        <Login setLoginData={setLoginData} />
       </HomeLayout>
     </ConfigProvider>
   );

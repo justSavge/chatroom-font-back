@@ -10,6 +10,7 @@ export const RobotContainer = styled.div`
   align-items: center;
   padding: 0.5rem;
   border-radius: 50%;
+  position: relative;
   border: 2px solid RGB(236, 177, 172);
   position: fixed;
   top: ${(props) => {
@@ -47,9 +48,10 @@ export const RobotImage = styled.img`
   width: 3rem;
   height: 3rem;
   padding: 1rem;
+  border-radius: 50%;
   &:hover {
-    width: 4rem;
-    height: 4rem;
+    width: 3.5rem;
+    height: 3.5rem;
     transition: all 0.5s ease;
   }
   z-index: 100;

@@ -2,25 +2,42 @@ import { Button, Input } from "antd";
 import { RobotOpenLayout } from "../../style/layout/RobotTalkLayoutStyle";
 import styled from "styled-components";
 import { InputLayout } from "../../style/layout/InputLayout";
-import { memo, useState } from "react";
+import { useState } from "react";
 import { RobotTalkingMessageLayout } from "../../style/layout/robotTalkingMessageLayout";
 import { MessageBox } from "react-chat-elements";
-import { useLJStore } from "../../store/websocketStore";
+import { useDispatch, useSelector } from "react-redux";
+import { getCurrentStoreData } from "../../store/globalSlice";
+import { sendQuestionAndSaveAnswerInStoreForRobot } from "../../servers/AI/websocket-stream";
+import RobotSmallChatSignMessageBoxForTemporaryTypeStyle from "./RobotSmallChatSignMessageBoxForTemporaryTypeStyle";
 const StyledRobotInput = styled(Input)`
   width: 14rem;
   height: 2rem;
 `;
-const RobotSmallTalkingMemo = memo(function RobotSmallTalkingMemo({
-  sendAIMessage,
-  robotTalkingData,
-}) {
+
+const RobotSmallTalking = function ({ performer, performerFeatures }) {
+  const { robotTalkingData, isRobotLoading } = useSelector(
+    getCurrentStoreData()
+  );
+  console.log(robotTalkingData);
   const [inputValue, setInputValue] = useState("");
+  const [isShowTypeBox, setIsShowTypeBox] = useState(false);
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
-  const handleSendMessage = function () {
-    sendAIMessage(inputValue);
-    setInputValue(() => "");
+  const handleCloseTypeBox = () => setIsShowTypeBox(false);
+  const handleShowTypeBox = () => setIsShowTypeBox(true);
+  const dispatch = useDispatch();
+  const saveMessageInRobotStoreAndClearInputValue = function () {
+    if (inputValue) {
+      const standardData = sendQuestionAndSaveAnswerInStoreForRobot(dispatch, {
+        message: inputValue,
+        performer,
+        performerFeatures,
+      });
+      setInputValue(() => "");
+      console.log("最近返回的数据", standardData);
+      return standardData;
+    }
   };
   return (
     <RobotOpenLayout>
@@ -30,38 +47,44 @@ const RobotSmallTalkingMemo = memo(function RobotSmallTalkingMemo({
           value={inputValue}
           onChange={handleInputChange}
           onClick={(e) => e.target.focus()}
+          disabled={isRobotLoading}
         />
         <Button
-          onClick={() => handleSendMessage()}
-          style={{ width: "3rem", padding: "3px" }}
+          onClick={handleShowTypeBox}
+          style={{
+            width: "3rem",
+            padding: "3px",
+            cursor: isRobotLoading || !inputValue ? "not-allowed" : "pointer",
+          }}
         >
           发送
         </Button>
       </InputLayout>
       <RobotTalkingMessageLayout>
-        {robotTalkingData?.map((singnMessage) => {
+        {robotTalkingData?.map((singMessage) => {
           return (
             <MessageBox
-              key={singnMessage.timeStamp}
+              key={singMessage.timeStamp}
               type="text"
-              title={singnMessage.sender}
-              position={singnMessage === "human" ? "left" : "right"}
-              text={singnMessage.message}
+              title={singMessage.senderName === "robot" ? "robot" : "我"}
+              position={
+                singMessage.senderName === "robot" ? "left" : "right"
+              }
+              text={singMessage.message}
+              styles={{ whiteSpace: "pre-line" }}
             />
           );
         })}
+        {isShowTypeBox && (
+          <RobotSmallChatSignMessageBoxForTemporaryTypeStyle
+            handleCloseTypeBox={handleCloseTypeBox}
+            saveMessageInRobotStoreAndClearInputValue={
+              saveMessageInRobotStoreAndClearInputValue
+            }
+          />
+        )}
       </RobotTalkingMessageLayout>
     </RobotOpenLayout>
   );
-});
-const RobotSmallTalking = function () {
-  const { sendAIMessage, robotTalkingData } = useLJStore();
-  return (
-    <RobotSmallTalkingMemo
-      sendAIMessage={sendAIMessage}
-      robotTalkingData={robotTalkingData}
-    />
-  );
 };
 export default RobotSmallTalking;
-
