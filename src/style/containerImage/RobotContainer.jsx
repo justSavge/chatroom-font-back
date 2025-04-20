@@ -13,6 +13,7 @@ export const RobotContainer = styled.div`
   position: relative;
   border: 2px solid RGB(236, 177, 172);
   position: fixed;
+  z-index: 999;
   top: ${(props) => {
     return props.y + "px";
   }};

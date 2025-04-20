@@ -41,11 +41,30 @@
   }
 ```
 
+#### redux保存的数据格式 userInputValue
+```
+{
+  type:'text'|'file';
+  value:string|'';
+}
+```
 ### websocket
 
-#### 提供字段
+##### 前端维护单对单聊天
 
-- messageForRobot - 和 ai 聊天，在机器人弹窗当中实现
+前端维护一个单聊哈希表,键是账号,聊天记录与聊天室 talkingData 一致
+
+```
+ singleChatData:{
+  [account]: {
+    timeStamp,
+    message,
+    senderId,
+    senderName,
+    custom
+  }[]
+ }
+```
 
 #### 鉴权
 
@@ -71,7 +90,8 @@ customBgColor:{ layout, messageBox, rightContainer} 对应整体，用户聊天�
 
 由前端维护用户聊天记录
 对于单个用户/机器人也是
-发现一个弊端：redux不可以存储不可序列化的数据，比如dom节点
+发现一个弊端：redux 不可以存储不可序列化的数据，比如 dom 节点
+
 <!--  -->
 
 为了减少逻辑，我展示将所有客户端的聊天都要经过服务器一遍，这样便于聊天记录管理。、

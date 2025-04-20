@@ -7,23 +7,36 @@ import {
 } from "../../store/globalSlice";
 import { ioInstance } from "../../servers/websocket";
 
-const PostButton = function () {
+const PostButton = function ({ file, setFile }) {
   const { styles } = useCustomizedUserInput();
   const { userInputValue, myAccountData } = useSelector(getCurrentStoreData());
   const { account, name, custom = {} } = myAccountData;
+  const { type, value } = userInputValue;
   console.log(userInputValue);
   const dispatch = useDispatch();
   const postMessage = function () {
     console.log(userInputValue);
-    if (userInputValue && userInputValue?.length) {
+    if (type === "text") {
+      if (!value) return;
       ioInstance.emit("user-broadcast-message", {
-        message: userInputValue,
+        message: value,
         account,
         name,
         custom,
       });
     }
-    dispatch(setUserInputValue(""));
+
+    if (type === "file") {
+      if (!file) return;
+      ioInstance.emit("user-broadcast-file", {
+        message: { name: file.name, value: file },
+        account,
+        name,
+        custom,
+      });
+    }
+    setFile(null);
+    dispatch(setUserInputValue({ type: "text", value: "" }));
   };
   return (
     <Button className={styles.putMessage} onClick={postMessage}>

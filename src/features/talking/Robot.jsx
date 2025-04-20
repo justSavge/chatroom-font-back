@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   RobotContainer,
   RobotImage,
@@ -32,6 +32,7 @@ function Robot({ defineProperty }) {
     }, 4000);
     return () => clearTimeout(timer);
   }, []);
+  const robotImgRef = useRef(null);
   const { top, left } = robotPosition;
   const handleChangeRobotStyle = function (robotItem) {
     setRobotStyle(robotItem);
@@ -73,13 +74,15 @@ function Robot({ defineProperty }) {
       draggable
       onDragStart={handleRobotDragStart}
       onDragEnd={handleRobotDragEnd}
-      onClick={handleShowRoom}
     >
       <RobotImage
+        ref={robotImgRef}
         src={robotStyle.imgPath}
         alt="机器人"
+        onMouseOver={(e) => e.currentTarget.focus()}
         onMouseDown={handleChangeDown}
         onContextMenu={(e) => e.preventDefault()}
+        onClick={handleShowRoom}
       />
       {isShowRobotSelection && (
         <RobotHeaderImgSelection

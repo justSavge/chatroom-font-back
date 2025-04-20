@@ -12,12 +12,11 @@ const HeaderStyle = styled.div`
   position: fixed;
   top: 1rem;
   right: 8rem;
-  width: 2rem;
-  height: 2rem;
+  z-index: 99;
 `;
 const Img = styled.img`
-  width: 100%;
-  height: 100%;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   border: 1px solid gray;
   &:hover {

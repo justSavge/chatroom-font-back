@@ -61,6 +61,7 @@ export class AIws {
    * @type {WebSocket|null}
    */
   instance;
+  /** 连接成功后发送的第一条数据，处理服务器发送message事件的函数  */
   constructor(message, handleAiWsResponseAnswerFunc) {
     this.init(message, handleAiWsResponseAnswerFunc);
   }
@@ -156,7 +157,7 @@ export const saveMessageForRobotInReduxStore = function (
 /**
  *
  * @param {object} question
- * @param {WebSocket} ws
+ * @param { {message:string, performer:string, performerFeatures:string} }
  * 保存问题在redux-store
  * 返回ai-ws所需标准格式
  */

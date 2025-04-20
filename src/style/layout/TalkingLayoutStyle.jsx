@@ -78,7 +78,7 @@ const useStyle = createStyles(({ prefixCls, css }) => ({
  * @param context 作为按钮的文本
  * @returns 渐变颜色的按钮
  */
-export const CoolButton = ({ context = "?" }) => {
+export const CoolButton = ({ context = "", handleClick }) => {
   const { styles } = useStyle();
   return (
     <ConfigProvider
@@ -87,7 +87,7 @@ export const CoolButton = ({ context = "?" }) => {
       }}
       wave={{ disabled: true }}
     >
-      <Space>
+      <Space onClick={handleClick}>
         <Button type="primary" size="large">
           {context}
         </Button>
