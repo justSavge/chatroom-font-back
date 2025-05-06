@@ -16,7 +16,15 @@ const Login = function ({ setLoginData }) {
       ? await userLogin(values)
       : await userRegister(values);
     const { isSuccess, data } = serverResData;
-    setLoginData(data);
+    if (isSuccess)
+      setLoginData(() => {
+        return { isSuccess: true, data, status: 200 };
+      });
+    else {
+      setLoginData((old) => {
+        return { isSuccess: false, ...old };
+      });
+    }
     console.log("处理以后的数据", serverResData);
     if (isSuccess && values.remember) {
       if (values.remember) {
@@ -54,7 +62,7 @@ const Login = function ({ setLoginData }) {
         }}
         initialValues={{
           remember: true,
-          userName: localStorage.getItem("userName"),
+          account: localStorage.getItem("account"),
         }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
@@ -82,6 +90,10 @@ const Login = function ({ setLoginData }) {
               required: true,
               message: "请输入你的账号!",
             },
+            {
+              min: 8,
+              message: "至少要八个字符哟~",
+            },
           ]}
         >
           <Input />
@@ -93,6 +105,10 @@ const Login = function ({ setLoginData }) {
             {
               required: true,
               message: "请输入你的密码!",
+            },
+            {
+              min: 8,
+              message: "至少要八个字符哟~",
             },
           ]}
         >

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { getCurrentStoreData } from "../../store/globalSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getCurrentStoreData, getMyAccountData } from "../../store/globalSlice";
 import ChangeHeadImageButton from "./model-borad/ChangeHeadImageButton";
 import ChangeUserNameButton from "./model-borad/ChangeUserNameButton";
 import { message } from "antd";
@@ -65,8 +65,9 @@ const ShowDetail = styled.div`
     height: 12rem;
   }
 `;
-const HeaderImage = function () {
+const HeaderImage = function ({ setLoginData }) {
   const myAccountData = useSelector(getCurrentStoreData("myAccountData"));
+  const dispatch = useDispatch();
   console.log("得到返回的myaccount", myAccountData);
   const customHeadImage = myAccountData.custom
     ? myAccountData.custom.headImage
@@ -88,10 +89,28 @@ const HeaderImage = function () {
         </BigDiv>
         <BigDiv>
           <ChangeColorBoard />
-          <Div>更多功能</Div>
+          <Div>
+            <a
+              href="https://github.com/justSavge/chatroom-font-back"
+              style={{ textDecoration: "none", color: "inherit" }}
+              target="_blank"
+            >
+              反馈建议
+            </a>
+          </Div>
         </BigDiv>
         <BigDiv>
-          <Div>退出</Div>
+          <Div>
+            <a
+              href="/"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={() =>
+                setLoginData((data) => ({ ...data, isSuccess: false }))
+              }
+            >
+              退出
+            </a>
+          </Div>
         </BigDiv>
       </ShowDetail>
     </HeaderStyle>

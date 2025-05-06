@@ -52,8 +52,7 @@ const Span = styled.span`
   margin-top: 2rem;
   font-size: 1.5rem;
   color: #7d7196;
-  background-color: black;
-`;
+  `;
 const Button = styled.button`
   width: 4rem;
   height: 2rem;

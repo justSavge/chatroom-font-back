@@ -17,7 +17,7 @@ function App() {
     },
     {
       path: "chat-room",
-      element: <Talking loginData={loginData} />,
+      element: <Talking loginData={loginData} setLoginData={setLoginData} />,
     },
     {
       path: "*",
